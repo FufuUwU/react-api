@@ -1,0 +1,22 @@
+// tsup.config.ts
+import { defineConfig } from "tsup";
+var tsup_config_default = defineConfig({
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  treeshake: true,
+  splitting: false,
+  target: "es2020",
+  // Peer deps must never be bundled — the consuming app owns the React and
+  // TanStack Query instances (two copies of either breaks hooks/context).
+  external: ["react", "react-dom", "@tanstack/react-query"],
+  outExtension({ format }) {
+    return { js: format === "cjs" ? ".cjs" : ".js" };
+  }
+});
+export {
+  tsup_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidHN1cC5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9faW5qZWN0ZWRfZmlsZW5hbWVfXyA9IFwiL3Nlc3Npb25zL3N0b2ljLW5pY2UtZGFyd2luL21udC9yZWFjdC1hcGkvdHN1cC5jb25maWcudHNcIjtjb25zdCBfX2luamVjdGVkX2Rpcm5hbWVfXyA9IFwiL3Nlc3Npb25zL3N0b2ljLW5pY2UtZGFyd2luL21udC9yZWFjdC1hcGlcIjtjb25zdCBfX2luamVjdGVkX2ltcG9ydF9tZXRhX3VybF9fID0gXCJmaWxlOi8vL3Nlc3Npb25zL3N0b2ljLW5pY2UtZGFyd2luL21udC9yZWFjdC1hcGkvdHN1cC5jb25maWcudHNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tIFwidHN1cFwiO1xuXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xuICBlbnRyeTogW1wic3JjL2luZGV4LnRzXCJdLFxuICBmb3JtYXQ6IFtcImVzbVwiLCBcImNqc1wiXSxcbiAgZHRzOiB0cnVlLFxuICBzb3VyY2VtYXA6IHRydWUsXG4gIGNsZWFuOiB0cnVlLFxuICB0cmVlc2hha2U6IHRydWUsXG4gIHNwbGl0dGluZzogZmFsc2UsXG4gIHRhcmdldDogXCJlczIwMjBcIixcbiAgLy8gUGVlciBkZXBzIG11c3QgbmV2ZXIgYmUgYnVuZGxlZCBcdTIwMTQgdGhlIGNvbnN1bWluZyBhcHAgb3ducyB0aGUgUmVhY3QgYW5kXG4gIC8vIFRhblN0YWNrIFF1ZXJ5IGluc3RhbmNlcyAodHdvIGNvcGllcyBvZiBlaXRoZXIgYnJlYWtzIGhvb2tzL2NvbnRleHQpLlxuICBleHRlcm5hbDogW1wicmVhY3RcIiwgXCJyZWFjdC1kb21cIiwgXCJAdGFuc3RhY2svcmVhY3QtcXVlcnlcIl0sXG4gIG91dEV4dGVuc2lvbih7IGZvcm1hdCB9KSB7XG4gICAgcmV0dXJuIHsganM6IGZvcm1hdCA9PT0gXCJjanNcIiA/IFwiLmNqc1wiIDogXCIuanNcIiB9O1xuICB9LFxufSk7XG4iXSwKICAibWFwcGluZ3MiOiAiO0FBQXlRLFNBQVMsb0JBQW9CO0FBRXRTLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLE9BQU8sQ0FBQyxjQUFjO0FBQUEsRUFDdEIsUUFBUSxDQUFDLE9BQU8sS0FBSztBQUFBLEVBQ3JCLEtBQUs7QUFBQSxFQUNMLFdBQVc7QUFBQSxFQUNYLE9BQU87QUFBQSxFQUNQLFdBQVc7QUFBQSxFQUNYLFdBQVc7QUFBQSxFQUNYLFFBQVE7QUFBQTtBQUFBO0FBQUEsRUFHUixVQUFVLENBQUMsU0FBUyxhQUFhLHVCQUF1QjtBQUFBLEVBQ3hELGFBQWEsRUFBRSxPQUFPLEdBQUc7QUFDdkIsV0FBTyxFQUFFLElBQUksV0FBVyxRQUFRLFNBQVMsTUFBTTtBQUFBLEVBQ2pEO0FBQ0YsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K

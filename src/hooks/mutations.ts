@@ -35,7 +35,7 @@ export type MutationOptionsFor<TData, TVariables> = Omit<
  * the provider's callback. Throws a clear error when neither yields a token,
  * rather than letting the API return a vague 400.
  */
-function useTurnstileResolver(): (explicit?: string) => Promise<string> {
+export function useTurnstileResolver(): (explicit?: string) => Promise<string> {
   const { getTurnstileToken } = useDoughmination();
 
   return async (explicit?: string) => {
@@ -84,9 +84,9 @@ export function useLogin(
         turnstileToken: await resolveTurnstile(variables.turnstileToken),
       }),
     ...options,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.plural.userInfo() });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });
 }
@@ -95,11 +95,19 @@ export interface SignupVariables {
   username: string;
   /** At least 10 characters, enforced server-side. */
   password: string;
+  /** Required — the account can't log in until this address is confirmed. */
+  email: string;
   displayName?: string | null;
   turnstileToken?: string;
 }
 
-/** Create an account. Turnstile is always required by the API. */
+/**
+ * Create an account. Turnstile and an email are both required by the API.
+ *
+ * The account can't log in until the emailed link is confirmed. The response
+ * carries a one-time `correction_token` — hold onto it if you want to let the
+ * user fix a mistyped address (`useCorrectEmail`) without a password.
+ */
 export function useSignup(
   options?: MutationOptionsFor<SignupResponse, SignupVariables>,
 ): UseMutationResult<SignupResponse, DoughminationError, SignupVariables> {
@@ -111,6 +119,7 @@ export function useSignup(
       client.signup({
         username: variables.username,
         password: variables.password,
+        email: variables.email,
         displayName: variables.displayName ?? null,
         turnstileToken: await resolveTurnstile(variables.turnstileToken),
       }),
@@ -149,9 +158,9 @@ export function useGuestbookPost(
       return client.postGuestbookEntry({ ...input, turnstileToken });
     },
     ...options,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.guestbook.all });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });
 }
@@ -173,9 +182,9 @@ export function useDeleteGuestbookEntry(
   return useMutation({
     mutationFn: (id: string) => client.deleteGuestbookEntry(id),
     ...options,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.guestbook.all });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });
 }

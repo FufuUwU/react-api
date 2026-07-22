@@ -159,17 +159,96 @@ export interface UserResponse {
   id: string;
   username: string;
   display_name?: string | null;
+  /** Email on file. Absent/null on legacy accounts created before emails. */
+  email?: string | null;
+  /**
+   * Whether `email` is proven. Legacy accounts (field absent server-side) are
+   * grandfathered as verified; only accounts explicitly `false` are blocked
+   * from logging in.
+   */
+  email_verified?: boolean;
+  /** A new address awaiting confirmation; `email` is unchanged until proven. */
+  pending_email?: string | null;
+  /** ISO timestamp; absent on pre-migration accounts. */
+  created_at?: string | null;
   is_admin: boolean;
   is_owner: boolean;
   is_pet: boolean;
   avatar_url?: string | null;
 }
 
-/** POST /v2/plural/signup */
+/**
+ * POST /v2/plural/signup.
+ *
+ * Signup now requires an email and sends a confirmation link — the account
+ * cannot log in until the address is verified. `correction_token` is returned
+ * ONCE, to this client only, and lets the user fix a typo'd address without a
+ * password (see `correctEmail`). Treat it like a credential: it isn't
+ * recoverable once this response is gone.
+ */
 export interface SignupResponse {
   success: boolean;
   message: string;
+  /** False when the account was made but the confirmation email didn't send. */
+  email_sent?: boolean;
+  /** Single-use token for `correctEmail` / `resendVerification`. */
+  correction_token?: string;
+  correction_expires_in_hours?: number;
+  /** Unverified accounts are swept after this many hours. */
+  unverified_deleted_after_hours?: number;
   user: UserResponse;
+}
+
+/** GET /v2/plural/users/check-email — rate limited (20/min/IP). */
+export interface EmailCheckResponse {
+  email: string;
+  exists: boolean;
+  available: boolean;
+}
+
+/** POST /v2/plural/verify-email */
+export interface VerifyEmailResponse {
+  success: boolean;
+  message: string;
+  username: string;
+}
+
+/** POST /v2/plural/resend-verification */
+export interface ResendVerificationResponse {
+  success: boolean;
+  message: string;
+  /** Present and true when the address was already confirmed. */
+  already?: boolean;
+}
+
+/** POST /v2/plural/correct-email */
+export interface CorrectEmailResponse {
+  success: boolean;
+  message: string;
+  login_url: string;
+  correction_expires_in_hours: number;
+}
+
+/**
+ * POST /v2/plural/forgot-password and /forgot-username.
+ * `sent_to` is a masked address, e.g. "c•••@g•••.com".
+ */
+export interface AccountRecoveryResponse {
+  success: boolean;
+  message: string;
+  sent_to: string;
+}
+
+/** GET /v2/plural/reset-password/check */
+export interface ResetTokenCheckResponse {
+  valid: boolean;
+}
+
+/** POST /v2/plural/reset-password */
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+  username: string;
 }
 
 /** GET /v2/plural/users/check-username */
