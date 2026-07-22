@@ -18,8 +18,8 @@ Typed client and React hooks for the [Doughmination API](https://doughmination.u
 ## Install
 
 ```bash
-bun add @doughmination/react-api @tanstack/react-query react
-# or: npm i @doughmination/react-api @tanstack/react-query react
+npm i @doughmination/react-api @tanstack/react-query react
+# or: bun add @doughmination/react-api @tanstack/react-query react
 ```
 
 `react` and `@tanstack/react-query` are peer dependencies — the package uses your app's copies.
@@ -355,9 +355,9 @@ Escape hatches: `useDoughminationClient()` (the client), `useDoughminationSocket
 ## Development
 
 ```bash
-bun install
-bun run typecheck
-bun run build     # tsup → dist/ (ESM + CJS + .d.ts)
+npm install
+npm run typecheck
+npm run build    # tsup → dist/ (ESM + CJS + .d.ts)
 ```
 
 ## Licence
